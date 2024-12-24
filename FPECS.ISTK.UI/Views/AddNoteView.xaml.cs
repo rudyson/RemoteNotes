@@ -15,11 +15,11 @@ using System.Windows.Shapes;
 
 namespace FPECS.ISTK.UI.Views;
 /// <summary>
-/// Interaction logic for NotesListPage.xaml
+/// Interaction logic for AddNoteView.xaml
 /// </summary>
-public partial class NotesListPage : UserControl
+public partial class AddNoteView : UserControl
 {
-    public NotesListPage()
+    public AddNoteView()
     {
         InitializeComponent();
     }

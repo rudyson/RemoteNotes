@@ -6,9 +6,11 @@
         xmlns:local="clr-namespace:FPECS.ISTK.UI"
         xmlns:stores="clr-namespace:FPECS.ISTK.UI.Stores"
         xmlns:views="clr-namespace:FPECS.ISTK.UI.Views"
+        xmlns:viewmodels="clr-namespace:FPECS.ISTK.UI.ViewModels"
+        d:DataContext="{d:DesignInstance Type=viewmodels:MainViewModel}"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
-    <Grid>
-        <views:NotesListPage/>
-    </Grid>
+        Title="Notes app" Height="450" Width="800">
+    <StackPanel>
+        <ContentControl Content="{Binding SelectedViewModel}"/>
+    </StackPanel>
 </Window>

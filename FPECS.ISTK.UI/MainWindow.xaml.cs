@@ -8,11 +8,9 @@ namespace FPECS.ISTK.UI;
 /// </summary>
 public partial class MainWindow : Window
 {
-    private readonly NoteStore _noteStore;
     public MainWindow()
     {
-        _noteStore = new NoteStore();
-        DataContext = new NotesViewModel(_noteStore);
+        DataContext = new MainViewModel();
         InitializeComponent();
     }
 }
