@@ -73,6 +73,13 @@ internal class NotesViewModel : INotifyPropertyChanged
     {
         _noteStore = noteStore;
         _noteStore.FilteredNotes.Filter = FilterNotes;
+
+        _ = InitializeAsync();
+    }
+
+    private async Task InitializeAsync()
+    {
+        await _noteStore.LoadNotesAsync();
     }
 
     private bool FilterNotes(object item)
