@@ -11,5 +11,8 @@
         <DataTemplate DataType="{x:Type viewmodels:NotesViewModel}">
             <views:NotesView/>
         </DataTemplate>
+        <DataTemplate DataType="{x:Type viewmodels:LoginViewModel}">
+            <views:LoginView/>
+        </DataTemplate>
     </Application.Resources>
 </Application>

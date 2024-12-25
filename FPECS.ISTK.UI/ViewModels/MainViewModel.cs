@@ -32,6 +32,7 @@ internal class MainViewModel : BaseViewModel
         {
             nameof(AddNoteViewModel) => new AddNoteViewModel(_noteStore, UpdateViewCommand),
             nameof(NotesViewModel) => new NotesViewModel(_noteStore, UpdateViewCommand),
+            nameof(LoginViewModel) => new LoginViewModel(_noteStore, UpdateViewCommand),
             _ => throw new NotImplementedException()
         };
 
