@@ -1,14 +1,14 @@
-﻿using FPECS.ISTK.Service.Infrastructure.FilterAttributes;
+﻿using FPECS.ISTK.Business;
+using FPECS.ISTK.Service.Infrastructure.FilterAttributes;
 using FPECS.ISTK.Shared.Options;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
 using System.IO.Compression;
 using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
-using FPECS.ISTK.Business;
-using Microsoft.OpenApi.Models;
 
 namespace FPECS.ISTK.Service;
 

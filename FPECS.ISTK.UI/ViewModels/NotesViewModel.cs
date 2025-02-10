@@ -46,10 +46,12 @@ internal class NotesViewModel : BaseViewModel
         }
     }
     private readonly NoteStore _noteStore;
+    private readonly UserStore _userStore;
     public ICollectionView FilteredNotes => _noteStore.FilteredNotes;
 
-    public NotesViewModel(NoteStore noteStore, RelayCommand updateViewCommand)
+    public NotesViewModel(NoteStore noteStore, UserStore userStore, RelayCommand updateViewCommand)
     {
+        _userStore = userStore;
         _noteStore = noteStore;
         _noteStore.FilteredNotes.Filter = FilterNotes;
 

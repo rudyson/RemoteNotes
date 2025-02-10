@@ -2,7 +2,6 @@ using FPECS.ISTK.Business.Services;
 using FPECS.ISTK.Shared.Requests;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 
 namespace FPECS.ISTK.Service.Controllers;
 [ApiController]
@@ -44,7 +43,8 @@ public class AuthController : ControllerBase
             }
             return Ok(response);
         }
-        catch (Exception) {
+        catch (Exception)
+        {
             _logger.LogWarning("Login attempt for user not exists: @{Username}", request.Username);
             return BadRequest();
         }

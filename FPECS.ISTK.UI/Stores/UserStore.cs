@@ -1,31 +1,42 @@
 ﻿using FPECS.ISTK.UI.Models;
-using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Runtime.CompilerServices;
-using System.Windows.Data;
 
 namespace FPECS.ISTK.UI.Stores;
-internal class UserStore
+
+internal class UserStore : INotifyPropertyChanged
 {
     private UserModel? _currentUser;
+
+    public event PropertyChangedEventHandler? PropertyChanged;
+
     public bool IsLoggedIn => _currentUser != null;
     public UserModel? CurrentUser
     {
         get => _currentUser;
-        set {
+        private set
+        {
             _currentUser = value;
-            
+            OnPropertyChanged(nameof(CurrentUser));
+            OnPropertyChanged(nameof(IsLoggedIn));
         }
     }
-    public UserStore()
-    {
 
+    public void Login(UserModel user)
+    {
+        CurrentUser = user;
     }
 
-    // GetUser
-    // GetAuthToken
-    // GetId
-    // IsLoggedIn
-    // Login
-    // Logout
+    public void Logout()
+    {
+        CurrentUser = null;
+    }
+
+    public string? GetAccessToken() => CurrentUser?.AccessToken;
+
+    public long? GetId() => CurrentUser?.Id;
+
+    private void OnPropertyChanged(string propertyName)
+    {
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+    }
 }

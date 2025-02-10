@@ -1,15 +1,12 @@
-﻿using FPECS.ISTK.Database;
+﻿using FPECS.ISTK.Business.Services.Authentication;
+using FPECS.ISTK.Database;
 using FPECS.ISTK.Database.Entities;
+using FPECS.ISTK.Shared;
 using FPECS.ISTK.Shared.Options;
 using FPECS.ISTK.Shared.Requests;
-using Microsoft.Extensions.Options;
-using Microsoft.IdentityModel.Tokens;
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using System.Text;
 using Microsoft.EntityFrameworkCore;
-using FPECS.ISTK.Business.Services.Authentication;
-using FPECS.ISTK.Shared;
+using Microsoft.Extensions.Options;
+using System.Security.Claims;
 
 namespace FPECS.ISTK.Business.Services;
 
@@ -24,11 +21,19 @@ public class AuthService : IAuthService
     private readonly JwtOptions _jwtOptions;
     private readonly ApplicationDbContext _dbContext;
     private readonly IPasswordHelper _passwordHelper;
-    public AuthService(ApplicationDbContext context, IOptions<JwtOptions> jwtOptions)
+    private readonly ITokenHelper _tokenHelper;
+    public AuthService(ApplicationDbContext context, IOptions<JwtOptions>? jwtOptions = null)
     {
-        _jwtOptions = jwtOptions.Value;
+        _jwtOptions = jwtOptions?.Value ?? new JwtOptions
+        {
+            Issuer = nameof(JwtOptions.Issuer),
+            Audience = nameof(JwtOptions.Audience),
+            Secret = nameof(JwtOptions.Secret),
+            ExpirationMinutes = 10
+        };
         _dbContext = context;
         _passwordHelper = new PasswordHelper();
+        _tokenHelper = new TokenHelper(_jwtOptions);
     }
 
     public async Task<LoginResponse?> LoginAsync(LoginRequest request, CancellationToken cancellationToken = default)
@@ -44,9 +49,13 @@ public class AuthService : IAuthService
         }
 
         var claims = GetClaimsByUser(user);
-        var token = GenerateToken(claims);
+        var token = _tokenHelper.GenerateToken(claims);
 
-        var response = new LoginResponse { AccessToken = token };
+        var response = new LoginResponse
+        {
+            UserId = user.Id,
+            AccessToken = token
+        };
 
         return response;
     }
@@ -60,11 +69,11 @@ public class AuthService : IAuthService
         }
 
         var hashedPassword = _passwordHelper.HashPassword(request.Password);
-        var userToCreate = new UserEntity 
-        { 
-            Username = request.Username, 
+        var userToCreate = new UserEntity
+        {
+            Username = request.Username,
             PasswordHash = hashedPassword,
-            Roles = [new UserRoleEntity { Role = AvailableRole.User}]
+            Roles = [new UserRoleEntity { Role = AvailableRole.User }]
         };
 
         await _dbContext.Users.AddAsync(userToCreate, cancellationToken);
@@ -73,7 +82,7 @@ public class AuthService : IAuthService
         return true;
     }
 
-    private static IEnumerable<Claim> GetClaimsByUser(UserEntity user) 
+    private static IEnumerable<Claim> GetClaimsByUser(UserEntity user)
     {
         if (user.Roles is { Count: > 0 })
         {
@@ -87,23 +96,5 @@ public class AuthService : IAuthService
             }
         }
         yield return new Claim(ClaimTypes.Name, user.Username);
-    }
-
-    private string GenerateToken(IEnumerable<Claim> claims)
-    {
-        var authSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtOptions.Secret));
-
-        var tokenDescriptor = new SecurityTokenDescriptor
-        {
-            Issuer = _jwtOptions.Issuer,
-            Audience = _jwtOptions.Audience,
-            Expires = DateTime.UtcNow.AddMinutes(_jwtOptions.ExpirationMinutes),
-            SigningCredentials = new SigningCredentials(authSigningKey, SecurityAlgorithms.HmacSha256),
-            Subject = new ClaimsIdentity(claims)
-        };
-
-        var tokenHandler = new JwtSecurityTokenHandler();
-        var token = tokenHandler.CreateToken(tokenDescriptor);
-        return tokenHandler.WriteToken(token);
     }
 }

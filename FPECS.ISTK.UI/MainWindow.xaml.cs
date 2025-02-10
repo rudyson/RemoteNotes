@@ -1,5 +1,4 @@
-﻿using FPECS.ISTK.UI.Stores;
-using FPECS.ISTK.UI.ViewModels;
+﻿using FPECS.ISTK.UI.ViewModels;
 using System.Windows;
 
 namespace FPECS.ISTK.UI;

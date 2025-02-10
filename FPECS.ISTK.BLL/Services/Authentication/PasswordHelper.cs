@@ -1,6 +1,4 @@
-﻿using FPECS.ISTK.Database.Entities;
-
-namespace FPECS.ISTK.Business.Services.Authentication;
+﻿namespace FPECS.ISTK.Business.Services.Authentication;
 
 public interface IPasswordHelper
 {

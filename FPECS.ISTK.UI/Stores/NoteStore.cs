@@ -1,7 +1,6 @@
 ﻿using FPECS.ISTK.UI.Models;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Runtime.CompilerServices;
 using System.Windows.Data;
 
 namespace FPECS.ISTK.UI.Stores;
@@ -47,7 +46,7 @@ internal class NoteStore
             note.Id = maxIdNote.Id + 1;
         }
         note.CreatedAt = DateTime.UtcNow;
-        
+
         Notes.Add(note);
         return note;
     }
@@ -55,7 +54,8 @@ internal class NoteStore
     {
         var noteById = Notes.FirstOrDefault(x => x.Id == id);
 
-        if (noteById is null) {
+        if (noteById is null)
+        {
             return false;
         }
 

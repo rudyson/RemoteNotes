@@ -8,4 +8,8 @@
     <UseWPF>true</UseWPF>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\FPECS.ISTK.Shared\FPECS.ISTK.Shared.csproj" />
+  </ItemGroup>
+
 </Project>

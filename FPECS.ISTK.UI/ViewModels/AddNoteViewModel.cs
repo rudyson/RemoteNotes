@@ -28,10 +28,12 @@ internal class AddNoteViewModel : BaseViewModel
     }
 
     private readonly NoteStore _noteStore;
+    private readonly UserStore _userStore;
     public RelayCommand UpdateViewCommand { get; set; }
-    public AddNoteViewModel(NoteStore noteStore, RelayCommand UpdateViewCommand)
+    public AddNoteViewModel(NoteStore noteStore, UserStore userStore, RelayCommand UpdateViewCommand)
     {
         _noteStore = noteStore;
+        _userStore = userStore;
         this.UpdateViewCommand = UpdateViewCommand;
     }
 
