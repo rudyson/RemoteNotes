@@ -5,14 +5,6 @@
              xmlns:viewmodels="clr-namespace:FPECS.ISTK.UI.ViewModels"
              xmlns:views="clr-namespace:FPECS.ISTK.UI.Views">
     <Application.Resources>
-        <DataTemplate DataType="{x:Type viewmodels:AddNoteViewModel}">
-            <views:AddNoteView/>
-        </DataTemplate>
-        <DataTemplate DataType="{x:Type viewmodels:NotesViewModel}">
-            <views:NotesView/>
-        </DataTemplate>
-        <DataTemplate DataType="{x:Type viewmodels:LoginViewModel}">
-            <views:LoginView/>
-        </DataTemplate>
+
     </Application.Resources>
 </Application>

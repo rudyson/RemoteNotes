@@ -11,6 +11,18 @@
         mc:Ignorable="d"
         Title="Notes app" Height="450" Width="800">
     <StackPanel>
-        <ContentControl Content="{Binding SelectedViewModel}"/>
+        <ContentControl Content="{Binding SelectedViewModel}">
+            <ContentControl.Resources>
+                <DataTemplate DataType="{x:Type viewmodels:AddNoteViewModel}">
+                    <views:AddNoteView/>
+                </DataTemplate>
+                <DataTemplate DataType="{x:Type viewmodels:NotesViewModel}">
+                    <views:NotesView/>
+                </DataTemplate>
+                <DataTemplate DataType="{x:Type viewmodels:LoginViewModel}">
+                    <views:LoginView/>
+                </DataTemplate>
+            </ContentControl.Resources>
+        </ContentControl>
     </StackPanel>
 </Window>

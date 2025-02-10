@@ -28,7 +28,12 @@ internal class MainViewModel : BaseViewModel
 
     public void HandleNavigate(string viewKey)
     {
-        BaseViewModel nextView = viewKey switch
+        SelectedViewModel = GetViewModelByNavigationKey(viewKey);
+    }
+
+    private BaseViewModel GetViewModelByNavigationKey(string navigationKey)
+    {
+        BaseViewModel viewModel = navigationKey switch
         {
             nameof(AddNoteViewModel) => new AddNoteViewModel(_noteStore, UpdateViewCommand),
             nameof(NotesViewModel) => new NotesViewModel(_noteStore, UpdateViewCommand),
@@ -36,6 +41,6 @@ internal class MainViewModel : BaseViewModel
             _ => throw new NotImplementedException()
         };
 
-        SelectedViewModel = nextView;
+        return viewModel;
     }
 }
