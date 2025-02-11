@@ -11,7 +11,8 @@ internal class NotesViewModel : BaseViewModel
     public RelayCommand DeleteNoteCommand => new(execute => DeleteNote(), canExecute => CanExecuteDeleteNote);
     public RelayCommand EditNoteCommand => new(execute => EditNote(), canExecute => CanExecuteEditNote);
 
-    public RelayCommand LogoutCommand => new(execute => Logout(), canExecute => true);
+    public RelayCommand LogoutCommand => new(execute => Logout(), canExecute => _userStore.IsLoggedIn);
+    public RelayCommand NavigateMemberProfileCommand => new(execute => NavigateMemberProfile(), canExecute => _userStore.IsLoggedIn);
 
     public RelayCommand UpdateViewCommand { get; set; }
 
@@ -107,6 +108,11 @@ internal class NotesViewModel : BaseViewModel
     private void Logout()
     {
         _userStore.Logout();
+    }
+
+    private void NavigateMemberProfile()
+    {
+        UpdateViewCommand.Execute(nameof(MemberProfileViewModel));
     }
 
     private bool CanExecuteResetFilters => !string.IsNullOrEmpty(SearchText) || SelectedDate.HasValue;

@@ -22,6 +22,9 @@
                 <DataTemplate DataType="{x:Type viewmodels:LoginViewModel}">
                     <views:LoginView/>
                 </DataTemplate>
+                <DataTemplate DataType="{x:Type viewmodels:MemberProfileViewModel}">
+                    <views:MemberProfileView/>
+                </DataTemplate>
             </ContentControl.Resources>
         </ContentControl>
     </StackPanel>

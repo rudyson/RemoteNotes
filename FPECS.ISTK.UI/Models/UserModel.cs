@@ -1,4 +1,6 @@
-﻿namespace FPECS.ISTK.UI.Models;
+﻿using FPECS.ISTK.Shared.Enums;
+
+namespace FPECS.ISTK.UI.Models;
 internal class UserModel
 {
     public required long Id { get; set; }
@@ -12,5 +14,9 @@ internal class UserInfoModel
     public string FirstName { get; set; } = string.Empty;
     public string LastName { get; set; } = string.Empty;
     public DateTime DateOfBirth { get; set; }
-    public required bool Sex { get; set; } // True - Male ; False - Female
+    public UserStatus Status { get; set; }
+    /// <summary>
+    /// True if Male, false if Female
+    /// </summary>
+    public required bool Sex { get; set; }
 }

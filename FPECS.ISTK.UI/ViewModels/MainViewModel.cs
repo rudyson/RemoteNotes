@@ -31,10 +31,7 @@ internal class MainViewModel : BaseViewModel, IDisposable
         }
     }
 
-    public RelayCommand UpdateViewCommand => new(
-        execute: (object? viewKey) => HandleNavigate(viewKey),
-        canExecute: canExecute => true
-        );
+    public RelayCommand UpdateViewCommand => new(execute: HandleNavigate, canExecute: canExecute => true);
 
     public void HandleNavigate(object? data = null)
     {
@@ -42,7 +39,7 @@ internal class MainViewModel : BaseViewModel, IDisposable
         if (data is string navigationKey)
         {
             SelectedViewModel = GetViewModelByNavigationKey(navigationKey);
-        } 
+        }
         else if (data is object[] paramArray && paramArray.Length > 0 && paramArray[0] is string navigationKeyAsParam)
         {
             var dataAsParam = paramArray.Length > 1 ? paramArray[1] : null;
@@ -62,6 +59,7 @@ internal class MainViewModel : BaseViewModel, IDisposable
             nameof(AddNoteViewModel) when data is not NoteModel => new AddNoteViewModel(_noteStore, _userStore, UpdateViewCommand),
             nameof(NotesViewModel) => new NotesViewModel(_noteStore, _userStore, UpdateViewCommand),
             nameof(LoginViewModel) => new LoginViewModel(_noteStore, _userStore, UpdateViewCommand),
+            nameof(MemberProfileViewModel) => new MemberProfileViewModel(_noteStore, _userStore, UpdateViewCommand),
             _ => throw new NotImplementedException()
         };
 

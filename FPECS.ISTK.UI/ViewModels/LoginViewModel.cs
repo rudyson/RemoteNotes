@@ -1,4 +1,5 @@
-﻿using FPECS.ISTK.Shared.Requests;
+﻿using FPECS.ISTK.Shared.Enums;
+using FPECS.ISTK.Shared.Requests;
 using FPECS.ISTK.UI.Clients;
 using FPECS.ISTK.UI.Commands;
 using FPECS.ISTK.UI.Models;
@@ -101,7 +102,12 @@ internal class LoginViewModel : BaseViewModel
                 ValidationMessage = "Username or password wrong";
                 return;
             }
-            var userModel = new UserModel { AccessToken = response.AccessToken, Id = response.UserId, Username = Username };
+            var userModel = new UserModel
+            {
+                AccessToken = response.AccessToken,
+                Id = response.UserId,
+                Username = Username
+            };
             _userStore.Login(userModel);
         }
         catch (TaskCanceledException)

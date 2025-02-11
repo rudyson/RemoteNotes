@@ -1,0 +1,22 @@
+﻿<UserControl x:Class="FPECS.ISTK.UI.Views.MemberProfileView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:FPECS.ISTK.UI.Views"
+             xmlns:viewmodels="clr-namespace:FPECS.ISTK.UI.ViewModels"
+             d:DataContext="{d:DesignInstance Type=viewmodels:MemberProfileViewModel}"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800">
+    <Grid>
+        <StackPanel Margin="5">
+            <TextBox Text="{Binding FirstName}" Margin="5, 5"/>
+            <TextBox Text="{Binding LastName}" Margin="5, 5"/>
+            <CheckBox Content="Check if male" IsChecked="{Binding Sex}" Margin="5, 5"/>
+            <DatePicker Text="{Binding DateOfBirth}" Margin="5, 5"/>
+            <ComboBox ItemsSource="{Binding UserStatuses}"  Margin="5, 5"
+          SelectedItem="{Binding Status}"/>
+            <Button Padding="4,2" Margin="2" Content="Confirm" Command="{Binding UpdateProfileCommand}"/>
+        </StackPanel>
+    </Grid>
+</UserControl>
