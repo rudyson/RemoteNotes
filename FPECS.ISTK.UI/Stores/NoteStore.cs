@@ -45,11 +45,24 @@ internal class NoteStore
         {
             note.Id = maxIdNote.Id + 1;
         }
-        note.CreatedAt = DateTime.UtcNow;
+
+        var now = DateTime.UtcNow;
+        note.CreatedAt = now;
+        note.UpdatedAt = now;
 
         Notes.Add(note);
         return note;
     }
+
+    public NoteModel UpdateNote(NoteModel noteModel)
+    {
+        var note = Notes.First(x => x.Id == noteModel.Id);
+        note.Title = noteModel.Title;
+        note.Content = noteModel.Content;
+        note.UpdatedAt = DateTime.UtcNow;
+        return note;
+    }
+
     public bool RemoveNote(long id)
     {
         var noteById = Notes.FirstOrDefault(x => x.Id == id);

@@ -6,6 +6,7 @@ using System.ComponentModel;
 namespace FPECS.ISTK.UI.ViewModels;
 internal class NotesViewModel : BaseViewModel
 {
+    public string UserInfo => $"Logged in as {_userStore.CurrentUser?.Username} (Id: {_userStore.CurrentUser?.Id})";
     public RelayCommand ResetFiltersCommand => new(execute => ResetFilters(), canExecute => CanExecuteResetFilters);
     public RelayCommand DeleteNoteCommand => new(execute => DeleteNote(), canExecute => CanExecuteDeleteNote);
     public RelayCommand EditNoteCommand => new(execute => EditNote(), canExecute => CanExecuteEditNote);

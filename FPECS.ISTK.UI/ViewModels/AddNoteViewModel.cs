@@ -6,6 +6,7 @@ namespace FPECS.ISTK.UI.ViewModels;
 internal class AddNoteViewModel : BaseViewModel
 {
     private readonly NoteModel _model;
+    public bool IsEditMode => _model is { Id: > 0 };
     public string CreateNoteButtonText => _model.Id > 0 ? "Update note" : "Add note";
     public string CreateNoteTitleText => _model.Id > 0 ? "Update note" : "Create note";
     public string NewNoteTitle
@@ -37,7 +38,13 @@ internal class AddNoteViewModel : BaseViewModel
         _userStore = userStore;
         this.UpdateViewCommand = UpdateViewCommand;
         if (model is NoteModel noteModel) {
-            _model = noteModel;
+            _model = new NoteModel
+            {
+                Id = noteModel.Id,
+                CreatedAt = noteModel.CreatedAt,
+                Content = noteModel.Content,
+                Title = noteModel.Title
+            };
         }
         else
         {
@@ -55,12 +62,14 @@ internal class AddNoteViewModel : BaseViewModel
 
     private void CreateNote()
     {
-        _model.CreatedAt = DateTime.UtcNow;
-
-        _noteStore.AddNote(_model);
-
-        NewNoteTitle = string.Empty;
-        NewNoteContent = string.Empty;
+        if (IsEditMode)
+        {
+            _noteStore.UpdateNote(_model);
+        }
+        else
+        {
+            _noteStore.AddNote(_model);
+        }
 
         _noteStore.FilteredNotes.Refresh();
         UpdateViewCommand.Execute(nameof(NotesViewModel));

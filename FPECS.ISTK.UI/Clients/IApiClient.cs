@@ -6,4 +6,5 @@ public interface IApiClient
 {
     Task<LoginResponse?> LoginAsync(LoginRequest request, CancellationToken cancellationToken = default);
     Task<bool> RegisterAsync(RegisterRequest request, CancellationToken cancellationToken = default);
+    // TODO: Update Note, Create note, delete note, get notes
 }
