@@ -8,6 +8,8 @@ internal class NotesViewModel : BaseViewModel
 {
     public RelayCommand ResetFiltersCommand => new(execute => ResetFilters(), canExecute => CanExecuteResetFilters);
     public RelayCommand DeleteNoteCommand => new(execute => DeleteNote(), canExecute => CanExecuteDeleteNote);
+    public RelayCommand EditNoteCommand => new(execute => EditNote(), canExecute => CanExecuteEditNote);
+
     public RelayCommand LogoutCommand => new(execute => Logout(), canExecute => true);
 
     public RelayCommand UpdateViewCommand { get; set; }
@@ -89,7 +91,16 @@ internal class NotesViewModel : BaseViewModel
 
     private void DeleteNote()
     {
-        _noteStore.RemoveNote(_selectedNote!.Id);
+        _noteStore.RemoveNote(SelectedNote!.Id);
+    }
+
+    private void EditNote()
+    {
+        if (SelectedNote is null)
+        {
+            return;
+        }
+        UpdateViewCommand.Execute(new object[] { nameof(AddNoteViewModel), SelectedNote });
     }
 
     private void Logout()
@@ -98,5 +109,6 @@ internal class NotesViewModel : BaseViewModel
     }
 
     private bool CanExecuteResetFilters => !string.IsNullOrEmpty(SearchText) || SelectedDate.HasValue;
-    private bool CanExecuteDeleteNote => _selectedNote is { Id: > 0 };
+    private bool CanExecuteDeleteNote => SelectedNote is { Id: > 0 };
+    private bool CanExecuteEditNote => SelectedNote is { Id: > 0 };
 }

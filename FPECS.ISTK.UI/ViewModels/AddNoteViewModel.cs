@@ -5,24 +5,25 @@ using FPECS.ISTK.UI.Stores;
 namespace FPECS.ISTK.UI.ViewModels;
 internal class AddNoteViewModel : BaseViewModel
 {
-    private string _newNoteTitle = string.Empty;
+    private readonly NoteModel _model;
+    public string CreateNoteButtonText => _model.Id > 0 ? "Update note" : "Add note";
+    public string CreateNoteTitleText => _model.Id > 0 ? "Update note" : "Create note";
     public string NewNoteTitle
     {
-        get => _newNoteTitle;
+        get => _model.Title;
         set
         {
-            _newNoteTitle = value;
+            _model.Title = value;
             OnPropertyChanged(nameof(NewNoteTitle));
         }
     }
 
-    private string _newNoteContent = string.Empty;
     public string NewNoteContent
     {
-        get => _newNoteContent;
+        get => _model.Content;
         set
         {
-            _newNoteContent = value;
+            _model.Content = value;
             OnPropertyChanged(nameof(NewNoteContent));
         }
     }
@@ -30,35 +31,39 @@ internal class AddNoteViewModel : BaseViewModel
     private readonly NoteStore _noteStore;
     private readonly UserStore _userStore;
     public RelayCommand UpdateViewCommand { get; set; }
-    public AddNoteViewModel(NoteStore noteStore, UserStore userStore, RelayCommand UpdateViewCommand)
+    public AddNoteViewModel(NoteStore noteStore, UserStore userStore, RelayCommand UpdateViewCommand, object? model = null)
     {
         _noteStore = noteStore;
         _userStore = userStore;
         this.UpdateViewCommand = UpdateViewCommand;
+        if (model is NoteModel noteModel) {
+            _model = noteModel;
+        }
+        else
+        {
+            _model = new NoteModel
+            {
+                Id = default,
+                CreatedAt = DateTime.MinValue,
+                Content = string.Empty,
+                Title = string.Empty
+            };
+        }
     }
 
     public RelayCommand CreateNoteCommand => new(execute => CreateNote(), canExecute => CanExecuteCreateNote);
 
     private void CreateNote()
     {
-        var newNote = new NoteModel()
-        {
-            Id = default,
-            Content = _newNoteContent!,
-            CreatedAt = default,
-            Title = _newNoteTitle!
-        };
+        _model.CreatedAt = DateTime.UtcNow;
 
-        _noteStore.AddNote(newNote);
+        _noteStore.AddNote(_model);
 
         NewNoteTitle = string.Empty;
         NewNoteContent = string.Empty;
 
-        OnPropertyChanged(nameof(NewNoteTitle));
-        OnPropertyChanged(nameof(NewNoteContent));
-
         _noteStore.FilteredNotes.Refresh();
         UpdateViewCommand.Execute(nameof(NotesViewModel));
     }
-    private bool CanExecuteCreateNote => !string.IsNullOrEmpty(_newNoteTitle) && !string.IsNullOrEmpty(_newNoteContent);
+    private bool CanExecuteCreateNote => !string.IsNullOrEmpty(NewNoteTitle) && !string.IsNullOrEmpty(NewNoteContent);
 }
