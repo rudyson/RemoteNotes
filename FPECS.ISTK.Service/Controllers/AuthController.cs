@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace FPECS.ISTK.Service.Controllers;
 [ApiController]
-[Route("[controller]")]
+[Route("api/[controller]")]
 public class AuthController : ControllerBase
 {
     private readonly ILogger<AuthController> _logger;
@@ -17,7 +17,7 @@ public class AuthController : ControllerBase
         _authService = authService;
     }
 
-    [HttpPost(nameof(Register))]
+    [HttpPost("register")]
     public async Task<IActionResult> Register([FromBody] RegisterRequest request, CancellationToken cancellationToken = default)
     {
         var isRegistered = await _authService.RegisterAsync(request, cancellationToken);
@@ -30,7 +30,7 @@ public class AuthController : ControllerBase
         return Ok();
     }
 
-    [HttpPost(nameof(Login))]
+    [HttpPost("login")]
     public async Task<IActionResult> Login([FromBody] LoginRequest request, CancellationToken cancellationToken = default)
     {
         try

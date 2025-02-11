@@ -11,11 +11,11 @@
              Background="White">
     <StackPanel Margin="10" MaxWidth="450">
         <TextBlock Grid.Row="0" Margin="0,0,0,5">Login:</TextBlock>
-        <TextBox x:Name="LoginTextBox" Grid.Row="1" Height="25" />
-        <TextBlock Grid.Row="2" Margin="0,15,0,5">Password:</TextBlock>
-        <PasswordBox x:Name="PasswordBox" Grid.Row="3" Height="25" />
-        <Label x:Name="passwordValidationPlaceholder" Content="{Binding ValidationMessage}" Foreground="Red" FontWeight="Bold" Height="45"/>
-        <Grid Margin="0, 10" HorizontalAlignment="Stretch">
+        <TextBox x:Name="LoginTextBox" Grid.Row="1" Height="25" Text="{Binding Username}"/>
+        <TextBlock Grid.Row="2" Margin="0,10,0,5">Password:</TextBlock>
+        <PasswordBox x:Name="PasswordBox" Grid.Row="3" Height="25" PasswordChanged="PasswordBox_PasswordChanged"/>
+        <Label Content="{Binding ValidationMessage}" Foreground="Red" FontWeight="Bold" Height="35"/>
+        <Grid Margin="0,0,0,5" HorizontalAlignment="Stretch">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="*" />

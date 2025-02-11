@@ -8,6 +8,8 @@ internal class NotesViewModel : BaseViewModel
 {
     public RelayCommand ResetFiltersCommand => new(execute => ResetFilters(), canExecute => CanExecuteResetFilters);
     public RelayCommand DeleteNoteCommand => new(execute => DeleteNote(), canExecute => CanExecuteDeleteNote);
+    public RelayCommand LogoutCommand => new(execute => Logout(), canExecute => true);
+
     public RelayCommand UpdateViewCommand { get; set; }
 
     private string _searchText = string.Empty;
@@ -88,6 +90,11 @@ internal class NotesViewModel : BaseViewModel
     private void DeleteNote()
     {
         _noteStore.RemoveNote(_selectedNote!.Id);
+    }
+
+    private void Logout()
+    {
+        _userStore.Logout();
     }
 
     private bool CanExecuteResetFilters => !string.IsNullOrEmpty(SearchText) || SelectedDate.HasValue;
