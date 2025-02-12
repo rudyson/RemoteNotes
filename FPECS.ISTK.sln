@@ -24,6 +24,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		README.md = README.md
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FPECS.ISTK.Tests", "FPECS.ISTK.Tests\FPECS.ISTK.Tests.csproj", "{71740986-7FE8-4F59-963F-F4CC825F96BA}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -50,6 +52,10 @@ Global
 		{87FEEBE1-7524-48CB-89F2-903A0CDEE35F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{87FEEBE1-7524-48CB-89F2-903A0CDEE35F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{87FEEBE1-7524-48CB-89F2-903A0CDEE35F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{71740986-7FE8-4F59-963F-F4CC825F96BA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{71740986-7FE8-4F59-963F-F4CC825F96BA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{71740986-7FE8-4F59-963F-F4CC825F96BA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{71740986-7FE8-4F59-963F-F4CC825F96BA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -59,6 +65,7 @@ Global
 		{A0465DDB-C46D-44C1-A912-1B788416CB45} = {C04325A8-2BD6-4088-BEC4-22C38518506B}
 		{44F9EF66-15CE-4AE2-B5BE-0450E03F048D} = {C04325A8-2BD6-4088-BEC4-22C38518506B}
 		{312D8DD0-C166-4D42-A155-5BD45608F410} = {987BA355-1D3C-47EA-A154-DD8A621CBAA8}
+		{71740986-7FE8-4F59-963F-F4CC825F96BA} = {C04325A8-2BD6-4088-BEC4-22C38518506B}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {B296E29B-ED98-4EB2-A90B-670DE75CCB1A}

@@ -11,10 +11,10 @@ namespace FPECS.ISTK.Service.Controllers;
 [Route("api/[controller]")]
 public class MemberController : ControllerBase
 {
-    private readonly ILogger<AuthController> _logger;
+    private readonly ILogger<MemberController> _logger;
     private readonly IMemberProfileService _memberProfileService;
 
-    public MemberController(ILogger<AuthController> logger, IMemberProfileService memberProfileService)
+    public MemberController(ILogger<MemberController> logger, IMemberProfileService memberProfileService)
     {
         _logger = logger;
         _memberProfileService = memberProfileService;

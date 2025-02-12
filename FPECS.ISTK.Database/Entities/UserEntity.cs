@@ -14,4 +14,5 @@ public class UserEntity
     public bool? Sex { get; set; }
 
     public virtual List<UserRoleEntity>? Roles { get; set; }
+    public virtual List<NoteEntity>? Notes { get; set; }
 }

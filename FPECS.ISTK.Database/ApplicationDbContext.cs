@@ -5,8 +5,9 @@ namespace FPECS.ISTK.Database;
 public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
     : DbContext(options)
 {
-    public required DbSet<UserEntity> Users { get; set; }
-    public required DbSet<UserRoleEntity> Roles { get; set; }
+    public virtual required DbSet<UserEntity> Users { get; set; }
+    public virtual required DbSet<UserRoleEntity> Roles { get; set; }
+    public virtual required DbSet<NoteEntity> Notes { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

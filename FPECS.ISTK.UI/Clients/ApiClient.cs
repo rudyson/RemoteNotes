@@ -1,5 +1,6 @@
 ﻿using FPECS.ISTK.Shared.Requests.Auth;
 using FPECS.ISTK.Shared.Requests.MemberProfile;
+using FPECS.ISTK.Shared.Requests.Notes;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
@@ -13,7 +14,7 @@ public class ApiClient : IApiClient
     private readonly HttpClient _httpClient;
     private readonly JsonSerializerOptions _jsonSerializerOptions;
 
-    public ApiClient(string? baseAddress = null, string? accessToken = null,  JsonSerializerOptions? jsonSerializerOptions = null)
+    public ApiClient(string? baseAddress = null, string? accessToken = null, JsonSerializerOptions? jsonSerializerOptions = null)
     {
         baseAddress ??= "https://localhost:5000";
         _httpClient = new HttpClient
@@ -24,7 +25,7 @@ public class ApiClient : IApiClient
         {
             PropertyNameCaseInsensitive = true,
             PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
-            Converters = { new JsonStringEnumConverter()}
+            Converters = { new JsonStringEnumConverter() }
         };
         if (!string.IsNullOrEmpty(accessToken))
         {
@@ -88,5 +89,71 @@ public class ApiClient : IApiClient
         var responseContent = await response.Content.ReadAsStringAsync(cancellationToken);
         var deserializedResponse = JsonSerializer.Deserialize<GetMemberProfileResponse>(responseContent, _jsonSerializerOptions);
         return deserializedResponse;
+    }
+
+    public async Task<List<GetNoteInfoResponse>?> GetNotesAsync(long memberId, CancellationToken cancellationToken = default)
+    {
+        var url = $"api/notes/{memberId}";
+        var response = await _httpClient.GetAsync(url, cancellationToken);
+
+        if (!response.IsSuccessStatusCode)
+        {
+            return null;
+        }
+
+        var responseContent = await response.Content.ReadAsStringAsync(cancellationToken);
+        return JsonSerializer.Deserialize<List<GetNoteInfoResponse>>(responseContent, _jsonSerializerOptions);
+    }
+
+    public async Task<GetNoteInfoResponse?> GetNoteAsync(long memberId, long noteId, CancellationToken cancellationToken = default)
+    {
+        var url = $"api/notes/{memberId}/{noteId}";
+        var response = await _httpClient.GetAsync(url, cancellationToken);
+
+        if (!response.IsSuccessStatusCode)
+        {
+            return null;
+        }
+
+        var responseContent = await response.Content.ReadAsStringAsync(cancellationToken);
+        return JsonSerializer.Deserialize<GetNoteInfoResponse>(responseContent, _jsonSerializerOptions);
+    }
+
+    public async Task<GetNoteInfoResponse?> CreateNoteAsync(CreateNoteRequest request, CancellationToken cancellationToken = default)
+    {
+        var json = JsonSerializer.Serialize(request, _jsonSerializerOptions);
+        var content = new StringContent(json, Encoding.UTF8, "application/json");
+        var response = await _httpClient.PostAsync("api/notes", content, cancellationToken);
+
+        if (!response.IsSuccessStatusCode)
+        {
+            return null;
+        }
+
+        var responseContent = await response.Content.ReadAsStringAsync(cancellationToken);
+        return JsonSerializer.Deserialize<GetNoteInfoResponse>(responseContent, _jsonSerializerOptions);
+    }
+
+    public async Task<GetNoteInfoResponse?> UpdateNoteAsync(UpdateNoteRequest request, CancellationToken cancellationToken = default)
+    {
+        var url = $"api/notes/{request.MemberId}/{request.Id}";
+        var json = JsonSerializer.Serialize(request, _jsonSerializerOptions);
+        var content = new StringContent(json, Encoding.UTF8, "application/json");
+        var response = await _httpClient.PutAsync(url, content, cancellationToken);
+
+        if (!response.IsSuccessStatusCode)
+        {
+            return null;
+        }
+
+        var responseContent = await response.Content.ReadAsStringAsync(cancellationToken);
+        return JsonSerializer.Deserialize<GetNoteInfoResponse>(responseContent, _jsonSerializerOptions);
+    }
+
+    public async Task<bool> DeleteNoteAsync(long memberId, long noteId, CancellationToken cancellationToken = default)
+    {
+        var url = $"api/notes/{memberId}/{noteId}";
+        var response = await _httpClient.DeleteAsync(url, cancellationToken);
+        return response.IsSuccessStatusCode;
     }
 }
