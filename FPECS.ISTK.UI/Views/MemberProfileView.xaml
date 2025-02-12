@@ -10,13 +10,19 @@
              d:DesignHeight="450" d:DesignWidth="800">
     <Grid>
         <StackPanel Margin="5">
+            <TextBlock Text="First name" Margin="5, 5"/>
             <TextBox Text="{Binding FirstName}" Margin="5, 5"/>
+            <TextBlock Text="Last name" Margin="5, 5"/>
             <TextBox Text="{Binding LastName}" Margin="5, 5"/>
-            <CheckBox Content="Check if male" IsChecked="{Binding Sex}" Margin="5, 5"/>
-            <DatePicker Text="{Binding DateOfBirth}" Margin="5, 5"/>
+            <TextBlock Text="Sex" Margin="5, 5"/>
+            <CheckBox Content="{Binding SexAsText}" IsChecked="{Binding Sex}" Margin="5, 5"/>
+            <TextBlock Text="Date of birth" Margin="5, 5"/>
+            <DatePicker SelectedDate="{Binding DateOfBirth}" Margin="5, 5"/>
+            <TextBlock Text="Status" Margin="5, 5"/>
             <ComboBox ItemsSource="{Binding UserStatuses}"  Margin="5, 5"
           SelectedItem="{Binding Status}"/>
             <Button Padding="4,2" Margin="2" Content="Confirm" Command="{Binding UpdateProfileCommand}"/>
+            <Button Padding="4,2" Margin="2" Content="Discard" Command="{Binding DiscardChangesCommand}"/>
         </StackPanel>
     </Grid>
 </UserControl>

@@ -1,4 +1,4 @@
-﻿namespace FPECS.ISTK.Shared.Requests;
+﻿namespace FPECS.ISTK.Shared.Requests.Auth;
 public class LoginRequest
 {
     public required string Username { get; set; }

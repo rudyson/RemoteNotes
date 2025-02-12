@@ -1,5 +1,5 @@
 using FPECS.ISTK.Business.Services;
-using FPECS.ISTK.Shared.Requests;
+using FPECS.ISTK.Shared.Requests.Auth;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 

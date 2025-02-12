@@ -12,6 +12,7 @@ public static class RegisterLayerExtension
         services.UseDataAccessLayer(configuration);
 
         services.AddScoped<IAuthService, AuthService>();
+        services.AddScoped<IMemberProfileService, MemberProfileService>();
 
         return services;
     }

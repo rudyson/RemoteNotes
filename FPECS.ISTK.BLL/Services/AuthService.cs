@@ -3,7 +3,7 @@ using FPECS.ISTK.Database;
 using FPECS.ISTK.Database.Entities;
 using FPECS.ISTK.Shared;
 using FPECS.ISTK.Shared.Options;
-using FPECS.ISTK.Shared.Requests;
+using FPECS.ISTK.Shared.Requests.Auth;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using System.Security.Claims;
@@ -73,6 +73,8 @@ public class AuthService : IAuthService
         {
             Username = request.Username,
             PasswordHash = hashedPassword,
+            FirstName = string.Empty,
+            LastName = string.Empty,
             Roles = [new UserRoleEntity { Role = AvailableRole.User }]
         };
 

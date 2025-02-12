@@ -1,10 +1,9 @@
-﻿using FPECS.ISTK.Shared.Enums;
-using FPECS.ISTK.Shared.Requests;
+﻿using FPECS.ISTK.Shared.Requests.Auth;
 using FPECS.ISTK.UI.Clients;
 using FPECS.ISTK.UI.Commands;
 using FPECS.ISTK.UI.Models;
 using FPECS.ISTK.UI.Stores;
-using System.Threading;
+using System.Windows;
 
 namespace FPECS.ISTK.UI.ViewModels;
 internal class LoginViewModel : BaseViewModel
@@ -18,11 +17,7 @@ internal class LoginViewModel : BaseViewModel
     public RelayCommand LoginButtonCommand => new(async _ => await ExecuteLoginAsync(), canExecute => CanExecuteLogin);
     public RelayCommand RegisterButtonCommand => new(async _ => await ExecuteRegisterAsync(), canExecute => CanExecuteRegister);
 
-    private string _validationMessage;
     private string _username;
-    private string _password;
-    private bool _isLoading;
-
     public string Username
     {
         get => _username;
@@ -34,6 +29,7 @@ internal class LoginViewModel : BaseViewModel
         }
     }
 
+    private string _password;
     public string Password
     {
         get => _password;
@@ -44,6 +40,8 @@ internal class LoginViewModel : BaseViewModel
             RefreshCanExecute();
         }
     }
+
+    private bool _isLoading;
     public bool IsLoading
     {
         get => _isLoading;
@@ -61,6 +59,7 @@ internal class LoginViewModel : BaseViewModel
         RegisterButtonCommand.RaiseCanExecuteChanged();
     }
 
+    private string _validationMessage;
     public string ValidationMessage
     {
         get => _validationMessage;
@@ -68,8 +67,10 @@ internal class LoginViewModel : BaseViewModel
         {
             _validationMessage = value;
             OnPropertyChanged(nameof(ValidationMessage));
+            OnPropertyChanged(nameof(HasError));
         }
     }
+    public bool HasError => !string.IsNullOrWhiteSpace(ValidationMessage);
 
     public bool CanExecuteLogin => !string.IsNullOrWhiteSpace(Username) && !string.IsNullOrWhiteSpace(Password) && !_userStore.IsLoggedIn && !IsLoading;
     public bool CanExecuteRegister => !string.IsNullOrWhiteSpace(Username) && !string.IsNullOrWhiteSpace(Password) && !_userStore.IsLoggedIn && !IsLoading;
@@ -90,24 +91,45 @@ internal class LoginViewModel : BaseViewModel
         }
 
         IsLoading = true;
-        _cancellationTokenSource = new CancellationTokenSource();
-        var cancellationToken = _cancellationTokenSource.Token;
+        var cancellationToken = GetCancellationTokenAndCancelPreviousOperation();
 
         try
         {
             var request = new LoginRequest { Username = Username, Password = Password };
             var response = await _apiClient.LoginAsync(request, cancellationToken);
+
             if (response is null)
             {
                 ValidationMessage = "Username or password wrong";
                 return;
             }
+            else
+            {
+                ValidationMessage = string.Empty;
+            }
+
+            _apiClient.SetAccessToken(response.AccessToken);
+            var profile = await _apiClient.GetMemberProfileAsync(response.UserId, cancellationToken);
+
             var userModel = new UserModel
             {
                 AccessToken = response.AccessToken,
                 Id = response.UserId,
                 Username = Username
             };
+
+            if (profile is not null)
+            {
+                var info = new UserInfoModel
+                {
+                    Sex = profile.Sex,
+                    DateOfBirth = profile.DateOfBirth.ToDateTime(TimeOnly.MinValue),
+                    FirstName = profile.FirstName,
+                    LastName = profile.LastName
+                };
+                userModel.Info = info;
+            }
+
             _userStore.Login(userModel);
         }
         catch (TaskCanceledException)
@@ -128,13 +150,22 @@ internal class LoginViewModel : BaseViewModel
         }
 
         IsLoading = true;
-        _cancellationTokenSource = new CancellationTokenSource();
+        var cancellationToken = GetCancellationTokenAndCancelPreviousOperation();
 
         try
         {
-            await Task.Delay(2000, _cancellationTokenSource.Token);
+            var request = new RegisterRequest { Username = Username, Password = Password };
+            var isRegistered = await _apiClient.RegisterAsync(request, cancellationToken);
 
-            ValidationMessage = "User registered successfully!";
+            if (isRegistered)
+            {
+                MessageBox.Show("Now please login again with provided credentials", "User registered successfully!", MessageBoxButton.OK, MessageBoxImage.Information);
+                ValidationMessage = string.Empty;
+            }
+            else
+            {
+                ValidationMessage = "This user already exists. Try another username.";
+            }            
         }
         catch (TaskCanceledException)
         {
@@ -144,5 +175,15 @@ internal class LoginViewModel : BaseViewModel
         {
             IsLoading = false;
         }
+    }
+
+    private CancellationToken GetCancellationTokenAndCancelPreviousOperation()
+    {
+        _cancellationTokenSource?.Cancel();
+
+        _cancellationTokenSource = new CancellationTokenSource();
+        var cancellationToken = _cancellationTokenSource.Token;
+
+        return cancellationToken;
     }
 }

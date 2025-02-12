@@ -1,18 +1,25 @@
 ﻿using FPECS.ISTK.Shared.Enums;
+using FPECS.ISTK.Shared.Requests.Auth;
+using FPECS.ISTK.Shared.Requests.MemberProfile;
+using FPECS.ISTK.UI.Clients;
 using FPECS.ISTK.UI.Commands;
 using FPECS.ISTK.UI.Models;
 using FPECS.ISTK.UI.Stores;
 using System.Collections.ObjectModel;
+using System.Windows;
 
 namespace FPECS.ISTK.UI.ViewModels;
 internal class MemberProfileViewModel : BaseViewModel
 {
-    private bool _isLoading;
+    private CancellationTokenSource? _cancellationTokenSource;
     private readonly NoteStore _noteStore;
     private readonly UserStore _userStore;
     private UserInfoModel _model;
+    private readonly IApiClient _apiClient;
 
     public RelayCommand UpdateViewCommand { get; set; }
+    public RelayCommand UpdateProfileCommand => new(async execute => await UpdateProfileAsync(), canExecute => CanExecuteUpdateProfile);
+    public RelayCommand DiscardChangesCommand => new(execute => DiscardChanges(), canExecute => CanExecuteDiscardChanges);
 
     public DateTime DateOfBirth { 
         get
@@ -35,8 +42,11 @@ internal class MemberProfileViewModel : BaseViewModel
         {
             _model.Sex = value;
             OnPropertyChanged(nameof(Sex));
+            OnPropertyChanged(nameof(SexAsText));
         }
     }
+    public string SexAsText => _model.Sex ? "Male" : "Female";
+
     public string FirstName
     {
         get
@@ -73,6 +83,25 @@ internal class MemberProfileViewModel : BaseViewModel
             OnPropertyChanged(nameof(Status));
         }
     }
+
+    private bool _isLoading;
+    public bool IsLoading
+    {
+        get => _isLoading;
+        private set
+        {
+            _isLoading = value;
+            OnPropertyChanged(nameof(IsLoading));
+            RefreshCanExecute();
+        }
+    }
+
+    private void RefreshCanExecute()
+    {
+        UpdateProfileCommand.RaiseCanExecuteChanged();
+        DiscardChangesCommand.RaiseCanExecuteChanged();
+    }
+
     public ObservableCollection<UserStatus> UserStatuses { get; } = new ObservableCollection<UserStatus>(Enum.GetValues(typeof(UserStatus)).Cast<UserStatus>());
 
     public MemberProfileViewModel(NoteStore noteStore, UserStore userStore, RelayCommand UpdateViewCommand)
@@ -80,6 +109,7 @@ internal class MemberProfileViewModel : BaseViewModel
         _noteStore = noteStore;
         _userStore = userStore;
         this.UpdateViewCommand = UpdateViewCommand;
+        _apiClient = new ApiClient(accessToken: _userStore.GetAccessToken());
 
         if (_userStore.CurrentUser?.Info is not null)
         {
@@ -106,12 +136,64 @@ internal class MemberProfileViewModel : BaseViewModel
         }
     }
 
-    public RelayCommand UpdateProfileCommand => new(async execute => await UpdateProfileAsync(), canExecute => CanExecuteUpdateProfile);
-
     private async Task UpdateProfileAsync()
     {
-        _userStore.CurrentUser!.Info = _model;
+        if (IsLoading)
+        {
+            return;
+        }
+
+        IsLoading = true;
+        var cancellationToken = GetCancellationTokenAndCancelPreviousOperation();
+
+        try
+        {
+            var request = new UpdateMemberProfileRequest
+            {
+                Id = _userStore.GetId()!.Value,
+                FirstName = FirstName,
+                LastName = LastName,
+                DateOfBirth = DateOnly.FromDateTime(DateOfBirth),
+                Sex = Sex,
+                Status = Status
+            };
+            var getMemberProfileResponse = await _apiClient.UpdateMemberProfileAsync(request, cancellationToken);
+
+            if (getMemberProfileResponse is null)
+            {
+                MessageBox.Show("Try again later", "Unable to update profile", MessageBoxButton.OK, MessageBoxImage.Warning);
+            }
+            else
+            {
+                _userStore.CurrentUser!.Info = _model;
+                MessageBox.Show("Profile updated.", "Profile updated.", MessageBoxButton.OK, MessageBoxImage.Information);
+                UpdateViewCommand.Execute(nameof(NotesViewModel));
+            }
+        }
+        catch (Exception exception)
+        {
+            MessageBox.Show("Try again later", "Unable to update profile", MessageBoxButton.OK, MessageBoxImage.Warning);
+        }
+        finally
+        {
+            IsLoading = false;
+        }
+    }
+    private bool CanExecuteUpdateProfile => !IsLoading;
+
+    public bool CanExecuteDiscardChanges => !IsLoading;
+    private void DiscardChanges()
+    {
         UpdateViewCommand.Execute(nameof(NotesViewModel));
     }
-    private bool CanExecuteUpdateProfile => true;
+
+    private CancellationToken GetCancellationTokenAndCancelPreviousOperation()
+    {
+        _cancellationTokenSource?.Cancel();
+
+        _cancellationTokenSource = new CancellationTokenSource();
+        var cancellationToken = _cancellationTokenSource.Token;
+
+        return cancellationToken;
+    }
 }
