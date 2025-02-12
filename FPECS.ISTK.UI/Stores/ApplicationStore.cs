@@ -1,11 +1,13 @@
-﻿using FPECS.ISTK.UI.Models;
+﻿using FPECS.ISTK.UI.Clients;
+using FPECS.ISTK.UI.Models;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Windows.Data;
 
 namespace FPECS.ISTK.UI.Stores;
 
-internal class ApplicationStore : INotifyPropertyChanged, IUserStore, INoteStore
+internal class ApplicationStore : INotifyPropertyChanged, IUserStore
 {
     public ApplicationStore() {
         Notes = new ObservableCollection<NoteModel>();
@@ -35,6 +37,7 @@ internal class ApplicationStore : INotifyPropertyChanged, IUserStore, INoteStore
     public void Logout()
     {
         CurrentUser = null;
+        Notes.Clear();
     }
 
     public string? GetAccessToken() => CurrentUser?.AccessToken;
@@ -49,36 +52,45 @@ internal class ApplicationStore : INotifyPropertyChanged, IUserStore, INoteStore
     public ObservableCollection<NoteModel> Notes { get; set; }
     public ICollectionView FilteredNotes { get; }
 
-    public async Task LoadNotesAsync(CancellationToken cancellationToken = default)
+    public async Task LoadNotesAsync(IApiClient client, CancellationToken cancellationToken = default)
     {
-        if (Notes is { Count: > 0 })
+        var userId = GetId();
+        if (!userId.HasValue)
         {
             return;
         }
 
-        await Task.Delay(200, cancellationToken);
+        var notes = await client.GetNotesAsync(userId.Value, cancellationToken);
 
-        var now = DateTime.UtcNow;
-        var notes = new List<NoteModel>()
-            {
-                new NoteModel { Id=1, Title = "Shopping", Content = "Buy groceries", CreatedAt = now.AddDays(-1) },
-                new NoteModel { Id=2, Title = "Work", Content = "Finish project report", CreatedAt = now },
-                new NoteModel { Id=3, Title = "Meeting", Content = "Team sync-up", CreatedAt = now.AddDays(1) }
-            };
-
-        Notes.Clear();
-        foreach (var item in notes)
+        if (notes != null)
         {
-            Notes.Add(item);
+            var notesToAdd = notes.Select(note => new NoteModel
+            {
+                Id = note.Id,
+                Title = note.Title,
+                Content = note.Content,
+                CreatedAt = note.CreatedAt,
+                UpdatedAt = note.UpdatedAt,
+            }).ToList();
+            LoadNotes(notesToAdd);
+        }
+    }
+
+    public void LoadNotes(List<NoteModel> notes)
+    {
+        Notes.Clear();
+        foreach (var note in notes)
+        {
+            Notes.Add(note);
         }
     }
 
     public NoteModel AddNote(NoteModel note)
     {
-        var maxIdNote = Notes.MaxBy(x => x.Id);
-        if (maxIdNote != null)
+        if (note is { Id: < 1})
         {
-            note.Id = maxIdNote.Id + 1;
+            var maxIdNote = Notes.MaxBy(x => x.Id);
+            note.Id = (maxIdNote?.Id ?? 0) + 1;
         }
 
         var now = DateTime.UtcNow;

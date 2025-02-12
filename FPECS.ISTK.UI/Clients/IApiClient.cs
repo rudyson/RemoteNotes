@@ -12,8 +12,8 @@ public interface IApiClient
     Task<GetMemberProfileResponse?> GetMemberProfileAsync(long memberId, CancellationToken cancellationToken = default);
     Task<GetMemberProfileResponse?> UpdateMemberProfileAsync(UpdateMemberProfileRequest request, CancellationToken cancellationToken = default);
     Task<GetNoteInfoResponse?> CreateNoteAsync(CreateNoteRequest request, CancellationToken cancellationToken = default);
+    Task<GetNoteInfoResponse?> UpdateNoteAsync(UpdateNoteRequest request, CancellationToken cancellationToken = default);
     Task<bool> DeleteNoteAsync(long memberId, long noteId, CancellationToken cancellationToken = default);
-    Task<GetMemberProfileResponse?> GetMemberProfileAsync(long memberId, CancellationToken cancellationToken = default);
     Task<GetNoteInfoResponse?> GetNoteAsync(long memberId, long noteId, CancellationToken cancellationToken = default);
     Task<List<GetNoteInfoResponse>?> GetNotesAsync(long memberId, CancellationToken cancellationToken = default);
 }

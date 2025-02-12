@@ -13,6 +13,7 @@ public static class RegisterLayerExtension
 
         services.AddScoped<IAuthService, AuthService>();
         services.AddScoped<IMemberProfileService, MemberProfileService>();
+        services.AddScoped<INotesService, NotesService>();
 
         return services;
     }

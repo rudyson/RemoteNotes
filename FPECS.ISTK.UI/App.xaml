@@ -7,5 +7,6 @@
              xmlns:converters="clr-namespace:FPECS.ISTK.UI.Converters">
     <Application.Resources>
         <converters:InverseBooleanConverter x:Key="InverseBooleanConverter" />
+        <converters:EmptyCollectionToVisibilityConverter x:Key="EmptyCollectionToVisibilityConverter" />
     </Application.Resources>
 </Application>

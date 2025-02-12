@@ -129,6 +129,7 @@ internal class LoginViewModel : BaseViewModel
             }
 
             _store.Login(userModel);
+            await _store.LoadNotesAsync(_apiClient, cancellationToken);
         }
         catch (TaskCanceledException)
         {

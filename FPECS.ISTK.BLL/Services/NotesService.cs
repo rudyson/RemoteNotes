@@ -93,7 +93,7 @@ public class NotesService : INotesService
         var now = DateTime.UtcNow;
 
         note.Title = request.Title ?? note.Title;
-        note.Content = request.Title ?? note.Content;
+        note.Content = request.Content ?? note.Content;
         note.UpdatedAt = now;
 
         await _dbContext.SaveChangesAsync(cancellationToken);

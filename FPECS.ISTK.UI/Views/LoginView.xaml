@@ -39,9 +39,9 @@
     </UserControl.Resources>
     <StackPanel Margin="10" MaxWidth="450">
         <TextBlock Grid.Row="0" Margin="0,0,0,5" Style="{StaticResource ErrorTextBlockStyle}">Login:</TextBlock>
-        <TextBox x:Name="LoginTextBox" Grid.Row="1" Height="25" Text="{Binding Username}" Style="{StaticResource ErrorTextBoxStyle}"/>
+        <TextBox x:Name="LoginTextBox" Grid.Row="1" Height="25" Padding="2" Text="{Binding Username}" Style="{StaticResource ErrorTextBoxStyle}"/>
         <TextBlock Grid.Row="2" Margin="0,10,0,5" Style="{StaticResource ErrorTextBlockStyle}">Password:</TextBlock>
-        <PasswordBox x:Name="PasswordBox" Grid.Row="3" Height="25" PasswordChanged="PasswordBox_PasswordChanged" Style="{StaticResource ErrorPasswordBoxStyle}"/>
+        <PasswordBox x:Name="PasswordBox" Grid.Row="3" Height="25" Padding="2" PasswordChanged="PasswordBox_PasswordChanged" Style="{StaticResource ErrorPasswordBoxStyle}"/>
         <Label Content="{Binding ValidationMessage}" Foreground="Red" FontWeight="Bold" Height="35"/>
         <Grid Margin="0,0,0,5" HorizontalAlignment="Stretch">
             <Grid.ColumnDefinitions>
