@@ -2,12 +2,19 @@
 using Microsoft.EntityFrameworkCore;
 
 namespace FPECS.ISTK.Database;
-public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
-    : DbContext(options)
+public class ApplicationDbContext : DbContext
 {
     public virtual required DbSet<UserEntity> Users { get; set; }
     public virtual required DbSet<UserRoleEntity> Roles { get; set; }
     public virtual required DbSet<NoteEntity> Notes { get; set; }
+
+    public ApplicationDbContext()
+    {
+
+    }
+    public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
+    {
+    }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

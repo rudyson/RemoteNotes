@@ -6,9 +6,15 @@ using FPECS.ISTK.Shared;
 using FPECS.ISTK.Shared.Requests.Auth;
 using Microsoft.EntityFrameworkCore;
 using Moq;
-using System.Linq.Expressions;
+using MockQueryable.Moq;
+using NUnit.Framework;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace FPECS.ISTK.Tests;
+
 [TestFixture]
 public class AuthServiceTests
 {
@@ -21,60 +27,46 @@ public class AuthServiceTests
     public void SetUp()
     {
         var users = new List<UserEntity>
-            {
-                new() { Id = 1, Username = "user1", FirstName = "user", LastName = "system", PasswordHash = "hashedPassword123", Roles = new List<UserRoleEntity> { new() { Role = AvailableRole.User } } }
-            }.AsQueryable();
+        {
+            new() { Id = 1, Username = "user1", FirstName = "user", LastName = "system", PasswordHash = "$2a$12$TNLG5fJMr7Z0u7MB5VQrGOjH2D/bGpl.yVDHyvfCc8/w0YG36YGXK", Roles = new List<UserRoleEntity> { new() { Role = AvailableRole.User } } }
+        }.AsQueryable().BuildMockDbSet();
 
-        var mockSet = new Mock<DbSet<UserEntity>>();
-        mockSet.As<IQueryable<UserEntity>>().Setup(m => m.Provider).Returns(users.Provider);
-        mockSet.As<IQueryable<UserEntity>>().Setup(m => m.Expression).Returns(users.Expression);
-        mockSet.As<IQueryable<UserEntity>>().Setup(m => m.ElementType).Returns(users.ElementType);
-        mockSet.As<IQueryable<UserEntity>>().Setup(m => m.GetEnumerator()).Returns(users.GetEnumerator());
-        _dbContextMock.Setup(m => m.Users.FirstAsync(It.IsAny<Expression<Func<UserEntity, bool>>>(), CancellationToken.None))
-    .ReturnsAsync(users.First());
-
-        var options = new DbContextOptionsBuilder<ApplicationDbContext>().Options;
-        _dbContextMock = new Mock<ApplicationDbContext>(options);
-        _dbContextMock.Setup(db => db.Users).Returns(mockSet.Object);
+        _dbContextMock = new Mock<ApplicationDbContext>();
+        _dbContextMock.Setup(db => db.Users).Returns(users.Object);
 
         _passwordHelperMock = new Mock<IPasswordHelper>();
+
         _tokenHelperMock = new Mock<ITokenHelper>();
 
-        _authService = new AuthService(_dbContextMock.Object);
+        _authService = new AuthService(context: _dbContextMock.Object, _passwordHelperMock.Object, _tokenHelperMock.Object);
     }
 
     [Test]
     public async Task LoginAsync_ValidCredentials_ReturnsToken()
     {
-        // Arrange
         var request = new LoginRequest { Username = "user1", Password = "password" };
-        _passwordHelperMock.Setup(p => p.VerifyPassword(It.IsAny<string>(), It.IsAny<string>())).Returns(true);
         _tokenHelperMock.Setup(t => t.GenerateToken(It.IsAny<IEnumerable<System.Security.Claims.Claim>>())).Returns("fakeToken");
+        _passwordHelperMock.Setup(p => p.VerifyPassword(It.IsAny<string>(), It.IsAny<string>())).Returns(true);
 
-        // Act
         var result = await _authService.LoginAsync(request, CancellationToken.None);
 
-        // Assert
-        Assert.IsNotNull(result);
-        Assert.AreEqual(1, result.UserId);
-        Assert.AreEqual("fakeToken", result.AccessToken);
+        Assert.That(result, Is.Not.Null);
+        Assert.Multiple(() =>
+        {
+            Assert.That(result.UserId, Is.EqualTo(1));
+            Assert.That(result.AccessToken, Is.EqualTo("fakeToken"));
+        });
     }
 
     [Test]
     public async Task RegisterAsync_NewUser_ReturnsTrue()
     {
-        // Arrange
         var request = new RegisterRequest { Username = "newUser", Password = "password123" };
+        _dbContextMock.Setup(db => db.Users.AddAsync(It.IsAny<UserEntity>(), It.IsAny<CancellationToken>())).ReturnsAsync((Microsoft.EntityFrameworkCore.ChangeTracking.EntityEntry<UserEntity>)null!);
         _passwordHelperMock.Setup(p => p.HashPassword(It.IsAny<string>())).Returns("hashedPassword123");
-        _dbContextMock
-            .Setup(db => db.Users.AddAsync(It.IsAny<UserEntity>(), It.IsAny<CancellationToken>()))
-            .Returns((UserEntity user, CancellationToken _) =>
-                ValueTask.FromResult((Microsoft.EntityFrameworkCore.ChangeTracking.EntityEntry<UserEntity>)null!));
 
-        // Act
         var result = await _authService.RegisterAsync(request, CancellationToken.None);
 
-        // Assert
-        Assert.IsTrue(result);
+        Assert.That(result, Is.True);
     }
 }

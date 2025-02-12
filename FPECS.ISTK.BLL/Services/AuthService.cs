@@ -22,7 +22,7 @@ public class AuthService : IAuthService
     private readonly ApplicationDbContext _dbContext;
     private readonly IPasswordHelper _passwordHelper;
     private readonly ITokenHelper _tokenHelper;
-    public AuthService(ApplicationDbContext context, IOptions<JwtOptions>? jwtOptions = null)
+    public AuthService(ApplicationDbContext context, IPasswordHelper? passwordHelper = null, ITokenHelper? tokenHelper = null, IOptions<JwtOptions>? jwtOptions = null)
     {
         _jwtOptions = jwtOptions?.Value ?? new JwtOptions
         {
@@ -32,8 +32,8 @@ public class AuthService : IAuthService
             ExpirationMinutes = 10
         };
         _dbContext = context;
-        _passwordHelper = new PasswordHelper();
-        _tokenHelper = new TokenHelper(_jwtOptions);
+        _passwordHelper = passwordHelper ?? new PasswordHelper();
+        _tokenHelper = tokenHelper ?? new TokenHelper(_jwtOptions);
     }
 
     public async Task<LoginResponse?> LoginAsync(LoginRequest request, CancellationToken cancellationToken = default)
