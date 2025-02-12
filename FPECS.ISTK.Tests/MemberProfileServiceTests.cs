@@ -2,8 +2,8 @@
 using FPECS.ISTK.Database;
 using FPECS.ISTK.Database.Entities;
 using FPECS.ISTK.Shared.Requests.MemberProfile;
-using Moq;
 using MockQueryable.Moq;
+using Moq;
 
 namespace FPECS.ISTK.Tests;
 

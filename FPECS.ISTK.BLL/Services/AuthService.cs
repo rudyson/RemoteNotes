@@ -18,13 +18,12 @@ public interface IAuthService
 
 public class AuthService : IAuthService
 {
-    private readonly JwtOptions _jwtOptions;
     private readonly ApplicationDbContext _dbContext;
     private readonly IPasswordHelper _passwordHelper;
     private readonly ITokenHelper _tokenHelper;
     public AuthService(ApplicationDbContext context, IPasswordHelper? passwordHelper = null, ITokenHelper? tokenHelper = null, IOptions<JwtOptions>? jwtOptions = null)
     {
-        _jwtOptions = jwtOptions?.Value ?? new JwtOptions
+        var _jwtOptions = jwtOptions?.Value ?? new JwtOptions
         {
             Issuer = nameof(JwtOptions.Issuer),
             Audience = nameof(JwtOptions.Audience),

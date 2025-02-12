@@ -4,14 +4,8 @@ using FPECS.ISTK.Database;
 using FPECS.ISTK.Database.Entities;
 using FPECS.ISTK.Shared;
 using FPECS.ISTK.Shared.Requests.Auth;
-using Microsoft.EntityFrameworkCore;
-using Moq;
 using MockQueryable.Moq;
-using NUnit.Framework;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
+using Moq;
 
 namespace FPECS.ISTK.Tests;
 

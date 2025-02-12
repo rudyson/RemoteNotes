@@ -2,12 +2,9 @@
 using FPECS.ISTK.Database;
 using FPECS.ISTK.Database.Entities;
 using FPECS.ISTK.Shared.Requests.Notes;
-using Microsoft.EntityFrameworkCore;
-using Moq;
-using MockQueryable.Moq;
-using System.Data.Entity;
-using System.Linq.Expressions;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
+using MockQueryable.Moq;
+using Moq;
 
 namespace FPECS.ISTK.Tests;
 
@@ -61,12 +58,11 @@ public class NotesServiceTests
         {
             Assert.That(result.Title, Is.EqualTo("New Note"));
             Assert.That(result.Content, Is.EqualTo("New Content"));
-            //Assert.That(result.Id, Is.GreaterThan(0));
         });
     }
 
     [Test]
-    public async Task CreateNoteAsync_InvalidMemberId_ThrowsException()
+    public void CreateNoteAsync_InvalidMemberId_ThrowsException()
     {
         var request = new CreateNoteRequest { Title = "New Note", Content = "New Content", MemberId = 9999 };
 
@@ -80,7 +76,7 @@ public class NotesServiceTests
         var result = await _notesService.GetNotesAsync(1, CancellationToken.None);
 
         Assert.That(result, Is.Not.Null);
-        Assert.That(result.Count, Is.EqualTo(2)); // Should return 2 notes for memberId 1
+        Assert.That(result, Has.Count.EqualTo(2));
     }
 
     [Test]
@@ -98,7 +94,7 @@ public class NotesServiceTests
     }
 
     [Test]
-    public async Task GetNoteAsync_InvalidNoteId_ThrowsException()
+    public void GetNoteAsync_InvalidNoteId_ThrowsException()
     {
         Assert.ThrowsAsync<InvalidOperationException>(async () =>
             await _notesService.GetNoteAsync(1, 9999, CancellationToken.None));
@@ -121,7 +117,7 @@ public class NotesServiceTests
     }
 
     [Test]
-    public async Task UpdateNoteAsync_InvalidNoteId_ThrowsException()
+    public void UpdateNoteAsync_InvalidNoteId_ThrowsException()
     {
         var request = new UpdateNoteRequest { Id = 9999, MemberId = 1, Title = "Updated Title", Content = "Updated Content" };
 
@@ -138,14 +134,14 @@ public class NotesServiceTests
     }
 
     [Test]
-    public async Task DeleteNoteAsync_InvalidNoteId_ThrowsException()
+    public void DeleteNoteAsync_InvalidNoteId_ThrowsException()
     {
         Assert.ThrowsAsync<InvalidOperationException>(async () =>
             await _notesService.DeleteNoteAsync(1, 9999, CancellationToken.None));
     }
 
     [Test]
-    public async Task DeleteNoteAsync_InvalidMemberId_ThrowsException()
+    public void DeleteNoteAsync_InvalidMemberId_ThrowsException()
     {
         Assert.ThrowsAsync<InvalidOperationException>(async () =>
             await _notesService.DeleteNoteAsync(9999, 1, CancellationToken.None));
