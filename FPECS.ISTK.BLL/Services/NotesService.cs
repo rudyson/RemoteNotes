@@ -33,7 +33,7 @@ public class NotesService : INotesService
         };
         var addedEntity = await _dbContext.AddAsync(newNote, cancellationToken);
         await _dbContext.SaveChangesAsync(cancellationToken);
-        var note = addedEntity.Entity;
+        var note = addedEntity?.Entity ?? newNote;
 
         return new GetNoteInfoResponse
         {
