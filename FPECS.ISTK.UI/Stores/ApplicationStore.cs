@@ -6,7 +6,7 @@ using System.Windows.Data;
 
 namespace FPECS.ISTK.UI.Stores;
 
-internal class ApplicationStore : INotifyPropertyChanged, IUserStore
+internal class ApplicationStore : INotifyPropertyChanged, IUserStore, INotesStore
 {
     public ApplicationStore()
     {
