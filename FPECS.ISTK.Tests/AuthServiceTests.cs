@@ -1,18 +1,11 @@
-﻿using FPECS.ISTK.Business.Services.Authentication;
-using FPECS.ISTK.Business.Services;
-using FPECS.ISTK.Database.Entities;
+﻿using FPECS.ISTK.Business.Services;
+using FPECS.ISTK.Business.Services.Authentication;
 using FPECS.ISTK.Database;
-using FPECS.ISTK.Shared.Options;
-using FPECS.ISTK.Shared.Requests.Auth;
+using FPECS.ISTK.Database.Entities;
 using FPECS.ISTK.Shared;
+using FPECS.ISTK.Shared.Requests.Auth;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Options;
 using Moq;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Linq.Expressions;
 
 namespace FPECS.ISTK.Tests;

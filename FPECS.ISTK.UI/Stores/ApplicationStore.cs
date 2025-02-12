@@ -1,6 +1,5 @@
 ﻿using FPECS.ISTK.UI.Clients;
 using FPECS.ISTK.UI.Models;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Windows.Data;
@@ -9,7 +8,8 @@ namespace FPECS.ISTK.UI.Stores;
 
 internal class ApplicationStore : INotifyPropertyChanged, IUserStore
 {
-    public ApplicationStore() {
+    public ApplicationStore()
+    {
         Notes = new ObservableCollection<NoteModel>();
         FilteredNotes = CollectionViewSource.GetDefaultView(Notes);
     }
@@ -87,7 +87,7 @@ internal class ApplicationStore : INotifyPropertyChanged, IUserStore
 
     public NoteModel AddNote(NoteModel note)
     {
-        if (note is { Id: < 1})
+        if (note is { Id: < 1 })
         {
             var maxIdNote = Notes.MaxBy(x => x.Id);
             note.Id = (maxIdNote?.Id ?? 0) + 1;

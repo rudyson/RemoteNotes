@@ -1,5 +1,4 @@
 ﻿using FPECS.ISTK.Shared.Enums;
-using FPECS.ISTK.Shared.Requests.Auth;
 using FPECS.ISTK.Shared.Requests.MemberProfile;
 using FPECS.ISTK.UI.Clients;
 using FPECS.ISTK.UI.Commands;
@@ -20,7 +19,8 @@ internal class MemberProfileViewModel : BaseViewModel
     public RelayCommand UpdateProfileCommand => new(async execute => await UpdateProfileAsync(), canExecute => CanExecuteUpdateProfile);
     public RelayCommand DiscardChangesCommand => new(execute => DiscardChanges(), canExecute => CanExecuteDiscardChanges);
 
-    public DateTime DateOfBirth { 
+    public DateTime DateOfBirth
+    {
         get
         {
             return _model.DateOfBirth;

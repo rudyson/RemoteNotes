@@ -3,7 +3,6 @@ using FPECS.ISTK.UI.Clients;
 using FPECS.ISTK.UI.Commands;
 using FPECS.ISTK.UI.Models;
 using FPECS.ISTK.UI.Stores;
-using System.Threading;
 using System.Windows;
 
 namespace FPECS.ISTK.UI.ViewModels;
@@ -63,7 +62,8 @@ internal class AddNoteViewModel : BaseViewModel
         this.UpdateViewCommand = UpdateViewCommand;
         _cancellationTokenSource = new CancellationTokenSource();
 
-        if (model is NoteModel noteModel) {
+        if (model is NoteModel noteModel)
+        {
             _model = new NoteModel
             {
                 Id = noteModel.Id,

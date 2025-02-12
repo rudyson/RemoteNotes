@@ -3,7 +3,6 @@ using FPECS.ISTK.UI.Commands;
 using FPECS.ISTK.UI.Models;
 using FPECS.ISTK.UI.Stores;
 using System.ComponentModel;
-using System.Threading;
 using System.Windows;
 
 namespace FPECS.ISTK.UI.ViewModels;

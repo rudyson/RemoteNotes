@@ -2,8 +2,6 @@
 using FPECS.ISTK.UI.Models;
 using FPECS.ISTK.UI.Stores;
 using System.ComponentModel;
-using System.Data.Common;
-using System.Reflection.Metadata;
 
 namespace FPECS.ISTK.UI.ViewModels;
 internal class MainViewModel : BaseViewModel, IDisposable

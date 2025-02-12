@@ -1,7 +1,4 @@
-using Azure.Core;
 using FPECS.ISTK.Business.Services;
-using FPECS.ISTK.Shared.Requests.Auth;
-using FPECS.ISTK.Shared.Requests.MemberProfile;
 using FPECS.ISTK.Shared.Requests.Notes;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;

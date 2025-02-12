@@ -2,11 +2,6 @@
 using FPECS.ISTK.Shared.Requests.MemberProfile;
 using Mapster;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace FPECS.ISTK.Business.Services;
 public interface IMemberProfileService

@@ -1,13 +1,7 @@
-﻿using Azure.Core;
-using FPECS.ISTK.Database;
+﻿using FPECS.ISTK.Database;
 using FPECS.ISTK.Database.Entities;
 using FPECS.ISTK.Shared.Requests.Notes;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace FPECS.ISTK.Business.Services;
 

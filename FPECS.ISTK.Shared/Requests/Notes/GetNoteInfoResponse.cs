@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace FPECS.ISTK.Shared.Requests.Notes;
+﻿namespace FPECS.ISTK.Shared.Requests.Notes;
 public class GetNoteInfoResponse
 {
     public long Id { get; set; }

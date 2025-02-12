@@ -164,7 +164,7 @@ internal class LoginViewModel : BaseViewModel
             else
             {
                 ValidationMessage = "This user already exists. Try another username.";
-            }            
+            }
         }
         catch (TaskCanceledException)
         {
