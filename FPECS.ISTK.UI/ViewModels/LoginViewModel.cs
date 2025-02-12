@@ -8,8 +8,7 @@ using System.Windows;
 namespace FPECS.ISTK.UI.ViewModels;
 internal class LoginViewModel : BaseViewModel
 {
-    private readonly NoteStore _noteStore;
-    private readonly UserStore _userStore;
+    private readonly ApplicationStore _store;
     private CancellationTokenSource? _cancellationTokenSource;
     private readonly IApiClient _apiClient;
 
@@ -72,13 +71,12 @@ internal class LoginViewModel : BaseViewModel
     }
     public bool HasError => !string.IsNullOrWhiteSpace(ValidationMessage);
 
-    public bool CanExecuteLogin => !string.IsNullOrWhiteSpace(Username) && !string.IsNullOrWhiteSpace(Password) && !_userStore.IsLoggedIn && !IsLoading;
-    public bool CanExecuteRegister => !string.IsNullOrWhiteSpace(Username) && !string.IsNullOrWhiteSpace(Password) && !_userStore.IsLoggedIn && !IsLoading;
+    public bool CanExecuteLogin => !string.IsNullOrWhiteSpace(Username) && !string.IsNullOrWhiteSpace(Password) && !_store.IsLoggedIn && !IsLoading;
+    public bool CanExecuteRegister => !string.IsNullOrWhiteSpace(Username) && !string.IsNullOrWhiteSpace(Password) && !_store.IsLoggedIn && !IsLoading;
 
-    public LoginViewModel(NoteStore noteStore, UserStore userStore, RelayCommand updateViewCommand)
+    public LoginViewModel(ApplicationStore store, RelayCommand updateViewCommand)
     {
-        _noteStore = noteStore;
-        _userStore = userStore;
+        _store = store;
         _apiClient = new ApiClient();
         UpdateViewCommand = updateViewCommand;
     }
@@ -130,7 +128,7 @@ internal class LoginViewModel : BaseViewModel
                 userModel.Info = info;
             }
 
-            _userStore.Login(userModel);
+            _store.Login(userModel);
         }
         catch (TaskCanceledException)
         {

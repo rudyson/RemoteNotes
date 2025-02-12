@@ -4,13 +4,48 @@ using System.ComponentModel;
 using System.Windows.Data;
 
 namespace FPECS.ISTK.UI.Stores;
-internal class NoteStore
+
+internal class ApplicationStore : INotifyPropertyChanged, IUserStore, INoteStore
 {
-    public NoteStore()
-    {
+    public ApplicationStore() {
         Notes = new ObservableCollection<NoteModel>();
         FilteredNotes = CollectionViewSource.GetDefaultView(Notes);
     }
+    private UserModel? _currentUser;
+
+    public event PropertyChangedEventHandler? PropertyChanged;
+
+    public bool IsLoggedIn => _currentUser != null;
+    public UserModel? CurrentUser
+    {
+        get => _currentUser;
+        private set
+        {
+            _currentUser = value;
+            OnPropertyChanged(nameof(CurrentUser));
+            OnPropertyChanged(nameof(IsLoggedIn));
+        }
+    }
+
+    public void Login(UserModel user)
+    {
+        CurrentUser = user;
+    }
+
+    public void Logout()
+    {
+        CurrentUser = null;
+    }
+
+    public string? GetAccessToken() => CurrentUser?.AccessToken;
+
+    public long? GetId() => CurrentUser?.Id;
+
+    private void OnPropertyChanged(string propertyName)
+    {
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+    }
+
     public ObservableCollection<NoteModel> Notes { get; set; }
     public ICollectionView FilteredNotes { get; }
 

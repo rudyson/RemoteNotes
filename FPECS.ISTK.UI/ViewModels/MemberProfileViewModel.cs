@@ -12,8 +12,7 @@ namespace FPECS.ISTK.UI.ViewModels;
 internal class MemberProfileViewModel : BaseViewModel
 {
     private CancellationTokenSource? _cancellationTokenSource;
-    private readonly NoteStore _noteStore;
-    private readonly UserStore _userStore;
+    private readonly ApplicationStore _store;
     private UserInfoModel _model;
     private readonly IApiClient _apiClient;
 
@@ -104,16 +103,15 @@ internal class MemberProfileViewModel : BaseViewModel
 
     public ObservableCollection<UserStatus> UserStatuses { get; } = new ObservableCollection<UserStatus>(Enum.GetValues(typeof(UserStatus)).Cast<UserStatus>());
 
-    public MemberProfileViewModel(NoteStore noteStore, UserStore userStore, RelayCommand UpdateViewCommand)
+    public MemberProfileViewModel(ApplicationStore store, RelayCommand UpdateViewCommand)
     {
-        _noteStore = noteStore;
-        _userStore = userStore;
+        _store = store;
         this.UpdateViewCommand = UpdateViewCommand;
-        _apiClient = new ApiClient(accessToken: _userStore.GetAccessToken());
+        _apiClient = new ApiClient(accessToken: _store.GetAccessToken());
 
-        if (_userStore.CurrentUser?.Info is not null)
+        if (_store.CurrentUser?.Info is not null)
         {
-            var currentUserInfo = _userStore.CurrentUser.Info;
+            var currentUserInfo = _store.CurrentUser.Info;
             _model = new UserInfoModel
             {
                 DateOfBirth = currentUserInfo.DateOfBirth,
@@ -150,7 +148,7 @@ internal class MemberProfileViewModel : BaseViewModel
         {
             var request = new UpdateMemberProfileRequest
             {
-                Id = _userStore.GetId()!.Value,
+                Id = _store.GetId()!.Value,
                 FirstName = FirstName,
                 LastName = LastName,
                 DateOfBirth = DateOnly.FromDateTime(DateOfBirth),
@@ -165,7 +163,7 @@ internal class MemberProfileViewModel : BaseViewModel
             }
             else
             {
-                _userStore.CurrentUser!.Info = _model;
+                _store.CurrentUser!.Info = _model;
                 MessageBox.Show("Profile updated.", "Profile updated.", MessageBoxButton.OK, MessageBoxImage.Information);
                 UpdateViewCommand.Execute(nameof(NotesViewModel));
             }

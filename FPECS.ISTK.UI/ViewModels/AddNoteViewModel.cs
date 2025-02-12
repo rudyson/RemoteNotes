@@ -29,13 +29,11 @@ internal class AddNoteViewModel : BaseViewModel
         }
     }
 
-    private readonly NoteStore _noteStore;
-    private readonly UserStore _userStore;
+    private readonly ApplicationStore _store;
     public RelayCommand UpdateViewCommand { get; set; }
-    public AddNoteViewModel(NoteStore noteStore, UserStore userStore, RelayCommand UpdateViewCommand, object? model = null)
+    public AddNoteViewModel(ApplicationStore store, RelayCommand UpdateViewCommand, object? model = null)
     {
-        _noteStore = noteStore;
-        _userStore = userStore;
+        _store = store;
         this.UpdateViewCommand = UpdateViewCommand;
         if (model is NoteModel noteModel) {
             _model = new NoteModel
@@ -64,14 +62,14 @@ internal class AddNoteViewModel : BaseViewModel
     {
         if (IsEditMode)
         {
-            _noteStore.UpdateNote(_model);
+            _store.UpdateNote(_model);
         }
         else
         {
-            _noteStore.AddNote(_model);
+            _store.AddNote(_model);
         }
 
-        _noteStore.FilteredNotes.Refresh();
+        _store.FilteredNotes.Refresh();
         UpdateViewCommand.Execute(nameof(NotesViewModel));
     }
     private bool CanExecuteCreateNote => !string.IsNullOrEmpty(NewNoteTitle) && !string.IsNullOrEmpty(NewNoteContent);

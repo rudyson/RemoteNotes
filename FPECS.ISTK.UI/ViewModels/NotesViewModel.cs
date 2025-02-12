@@ -2,17 +2,18 @@
 using FPECS.ISTK.UI.Models;
 using FPECS.ISTK.UI.Stores;
 using System.ComponentModel;
+using System.Windows;
 
 namespace FPECS.ISTK.UI.ViewModels;
 internal class NotesViewModel : BaseViewModel
 {
-    public string UserInfo => $"Logged in as {_userStore.CurrentUser?.Username} (Id: {_userStore.CurrentUser?.Id})";
+    public string UserInfo => $"Logged in as {_store.CurrentUser?.Username} (Id: {_store.CurrentUser?.Id})";
     public RelayCommand ResetFiltersCommand => new(execute => ResetFilters(), canExecute => CanExecuteResetFilters);
     public RelayCommand DeleteNoteCommand => new(execute => DeleteNote(), canExecute => CanExecuteDeleteNote);
     public RelayCommand EditNoteCommand => new(execute => EditNote(), canExecute => CanExecuteEditNote);
 
-    public RelayCommand LogoutCommand => new(execute => Logout(), canExecute => _userStore.IsLoggedIn);
-    public RelayCommand NavigateMemberProfileCommand => new(execute => NavigateMemberProfile(), canExecute => _userStore.IsLoggedIn);
+    public RelayCommand LogoutCommand => new(execute => Logout(), canExecute => _store.IsLoggedIn);
+    public RelayCommand NavigateMemberProfileCommand => new(execute => NavigateMemberProfile(), canExecute => _store.IsLoggedIn);
 
     public RelayCommand UpdateViewCommand { get; set; }
 
@@ -51,15 +52,13 @@ internal class NotesViewModel : BaseViewModel
             OnPropertyChanged(nameof(SelectedNote));
         }
     }
-    private readonly NoteStore _noteStore;
-    private readonly UserStore _userStore;
-    public ICollectionView FilteredNotes => _noteStore.FilteredNotes;
+    private readonly ApplicationStore _store;
+    public ICollectionView FilteredNotes => _store.FilteredNotes;
 
-    public NotesViewModel(NoteStore noteStore, UserStore userStore, RelayCommand updateViewCommand)
+    public NotesViewModel(ApplicationStore store, RelayCommand updateViewCommand)
     {
-        _userStore = userStore;
-        _noteStore = noteStore;
-        _noteStore.FilteredNotes.Filter = FilterNotes;
+        _store = store;
+        _store.FilteredNotes.Filter = FilterNotes;
 
         UpdateViewCommand = updateViewCommand;
 
@@ -68,7 +67,7 @@ internal class NotesViewModel : BaseViewModel
 
     private async Task InitializeAsync()
     {
-        await _noteStore.LoadNotesAsync();
+        await _store.LoadNotesAsync();
     }
 
     private bool FilterNotes(object item)
@@ -93,7 +92,11 @@ internal class NotesViewModel : BaseViewModel
 
     private void DeleteNote()
     {
-        _noteStore.RemoveNote(SelectedNote!.Id);
+        var result = MessageBox.Show("Are you sure?", $"Confirmation (Note {SelectedNote!.Id})", MessageBoxButton.YesNo, MessageBoxImage.Question);
+        if (result == MessageBoxResult.Yes)
+        {
+            _store.RemoveNote(SelectedNote!.Id);
+        }
     }
 
     private void EditNote()
@@ -107,7 +110,7 @@ internal class NotesViewModel : BaseViewModel
 
     private void Logout()
     {
-        _userStore.Logout();
+        _store.Logout();
     }
 
     private void NavigateMemberProfile()

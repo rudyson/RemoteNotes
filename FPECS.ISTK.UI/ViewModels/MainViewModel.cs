@@ -8,14 +8,12 @@ using System.Reflection.Metadata;
 namespace FPECS.ISTK.UI.ViewModels;
 internal class MainViewModel : BaseViewModel, IDisposable
 {
-    private readonly NoteStore _noteStore;
-    private readonly UserStore _userStore;
+    private readonly ApplicationStore _store;
     private bool _disposed = false;
     public MainViewModel()
     {
-        _noteStore = new NoteStore();
-        _userStore = new UserStore();
-        _userStore.PropertyChanged += OnUserStoreChanged;
+        _store = new ApplicationStore();
+        _store.PropertyChanged += OnUserStoreChanged;
         _selectedViewModel = GetViewModelByNavigationKey(nameof(LoginViewModel));
     }
 
@@ -55,11 +53,11 @@ internal class MainViewModel : BaseViewModel, IDisposable
     {
         BaseViewModel viewModel = navigationKey switch
         {
-            nameof(AddNoteViewModel) when data is NoteModel => new AddNoteViewModel(_noteStore, _userStore, UpdateViewCommand, data),
-            nameof(AddNoteViewModel) when data is not NoteModel => new AddNoteViewModel(_noteStore, _userStore, UpdateViewCommand),
-            nameof(NotesViewModel) => new NotesViewModel(_noteStore, _userStore, UpdateViewCommand),
-            nameof(LoginViewModel) => new LoginViewModel(_noteStore, _userStore, UpdateViewCommand),
-            nameof(MemberProfileViewModel) => new MemberProfileViewModel(_noteStore, _userStore, UpdateViewCommand),
+            nameof(AddNoteViewModel) when data is NoteModel => new AddNoteViewModel(_store, UpdateViewCommand, data),
+            nameof(AddNoteViewModel) when data is not NoteModel => new AddNoteViewModel(_store, UpdateViewCommand),
+            nameof(NotesViewModel) => new NotesViewModel(_store, UpdateViewCommand),
+            nameof(LoginViewModel) => new LoginViewModel(_store, UpdateViewCommand),
+            nameof(MemberProfileViewModel) => new MemberProfileViewModel(_store, UpdateViewCommand),
             _ => throw new NotImplementedException()
         };
 
@@ -68,7 +66,7 @@ internal class MainViewModel : BaseViewModel, IDisposable
 
     private void OnUserStoreChanged(object? sender, PropertyChangedEventArgs e)
     {
-        if (e.PropertyName == nameof(UserStore.IsLoggedIn))
+        if (e.PropertyName == nameof(ApplicationStore.IsLoggedIn))
         {
             UpdateView();
         }
@@ -76,7 +74,7 @@ internal class MainViewModel : BaseViewModel, IDisposable
 
     private void UpdateView()
     {
-        var viewModelNavigationKey = _userStore.IsLoggedIn ? nameof(NotesViewModel) : nameof(LoginViewModel);
+        var viewModelNavigationKey = _store.IsLoggedIn ? nameof(NotesViewModel) : nameof(LoginViewModel);
         SelectedViewModel = GetViewModelByNavigationKey(viewModelNavigationKey);
     }
 
@@ -95,7 +93,7 @@ internal class MainViewModel : BaseViewModel, IDisposable
 
         if (disposing)
         {
-            _userStore.PropertyChanged -= OnUserStoreChanged;
+            _store.PropertyChanged -= OnUserStoreChanged;
         }
 
         _disposed = true;
