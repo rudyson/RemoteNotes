@@ -1,5 +1,4 @@
-# dnu-fpecs-master-istk
-ДНУ ФФЕКС 5.1_2.1_ОКП - Інформаційна стійкість комп'ютерних технологій 9 варіант
+# Remote notes
 
 ## Summary
 
@@ -65,3 +64,6 @@ dotnet test
 ```
 
 Ensure that your backend API is running if you need to run integration tests.
+
+DNU FPECS / Robustness course
+© 2024-2025 Ruslan Diadiushkin
